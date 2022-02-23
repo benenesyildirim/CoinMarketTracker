@@ -1,6 +1,7 @@
 package com.tracker.coin.data.remote.dto
 
 data class CoinDetailDto(
+    val name: String,
     val hashing_algorithm: String,
     val description: DescriptionModel,
     val image: ImageModel,

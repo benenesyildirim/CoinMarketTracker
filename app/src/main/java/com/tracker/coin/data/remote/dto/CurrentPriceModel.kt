@@ -1,3 +1,3 @@
 package com.tracker.coin.data.remote.dto
 
-data class CurrentPriceModel(val usd: Int, val eur: Int)
+data class CurrentPriceModel(val usd: Double, val eur: Double)
