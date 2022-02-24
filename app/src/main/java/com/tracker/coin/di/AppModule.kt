@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.GsonBuilder
 import com.tracker.coin.common.Constants.BASE_URL
+import com.tracker.coin.common.Constants.LOGGED_USER
 import com.tracker.coin.data.remote.CoinApi
 import com.tracker.coin.data.repository.CoinRepositoryImpl
 import com.tracker.coin.domain.repository.CoinRepository
@@ -43,7 +44,7 @@ object AppModule {
     @Singleton
     @Provides
     fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences {
-        return context.getSharedPreferences("", Context.MODE_PRIVATE)
+        return context.getSharedPreferences(LOGGED_USER, Context.MODE_PRIVATE)
     }
 
     @Provides

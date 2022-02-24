@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tracker.coin.data.remote.dto.CoinDto
 import com.tracker.coin.databinding.CoinRowDesignBinding
 
-class CoinListAdapter (private val coins: MutableList<CoinDto>, val listener: (CoinDto) -> Unit
+class CoinListAdapter (private val coins: List<CoinDto>, val listener: (CoinDto) -> Unit
 ) : RecyclerView.Adapter<CoinListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
