@@ -19,10 +19,10 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
     private val favoriteCoinsUseCase: FavoriteCoinsUseCase,
-                                            private val sharedPreferences: SharedPreferences): ViewModel(){
+    sharedPreferences: SharedPreferences) : ViewModel() {
 
     init {
-        val userId = sharedPreferences.getString(USER_ID,"")!!
+        val userId = sharedPreferences.getString(USER_ID, "")!!
         getCoins(userId)
     }
 
@@ -32,21 +32,19 @@ class FavoritesViewModel @Inject constructor(
     private fun getCoins(userId: String) = viewModelScope.launch {
         try {
             favoriteCoinsUseCase.getFavorites(userId).addOnCompleteListener {
-                if(it.isSuccessful){
+                if (it.isSuccessful) {
                     val coinList: MutableList<CoinDto> = mutableListOf()
 
                     val documentList = it.result.documents
 
-                    for (coin in documentList){
-                        coinList.add(
-                            CoinDto(coin.get("id").toString(),
-                                coin.get("name").toString(),
-                                coin.get("symbols").toString()))
+                    for (coin in documentList) {
+                        coinList.add(CoinDto(coin.get("id").toString(), coin.get("name")
+                            .toString(), coin.get("symbols").toString()))
                     }
 
                     _favoritesLiveData.postValue(Resource.Success(coinList))
-                }else{
-                    //_favoritesLiveData.postValue(Resource.Error(it.exception!!.localizedMessage ?: "An unexpected error occurred"))
+                } else {
+                    _favoritesLiveData.postValue(Resource.Error(it.exception!!.localizedMessage ?: "An unexpected error occurred"))
                 }
             }
         } catch (e: HttpException) {
@@ -55,4 +53,4 @@ class FavoritesViewModel @Inject constructor(
             _favoritesLiveData.postValue(Resource.Error("Couldn't reach server. Check your internet connection."))
         }
     }
-    }
+}

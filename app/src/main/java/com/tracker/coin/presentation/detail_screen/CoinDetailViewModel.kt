@@ -53,6 +53,8 @@ class CoinDetailViewModel @Inject constructor(
     val registerLiveData: LiveData<Resource<FirebaseUser>> get() = _registerLiveData
 
     fun registerUser(email: String, password: String) {
+        _registerLiveData.postValue(Resource.Loading())
+
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { registerResult ->
             if (registerResult.isSuccessful) {
                 _registerLiveData.postValue(Resource.Success(firebaseAuth.currentUser!!))

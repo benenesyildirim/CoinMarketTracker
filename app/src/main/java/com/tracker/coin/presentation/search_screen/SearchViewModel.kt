@@ -1,9 +1,11 @@
 package com.tracker.coin.presentation.search_screen
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tracker.coin.common.Constants
 import com.tracker.coin.common.Resource
 import com.tracker.coin.data.remote.dto.CoinDto
 import com.tracker.coin.domain.use_case.get_coins.GetCoinsUseCase
@@ -14,7 +16,9 @@ import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(private val getCoinsUseCase: GetCoinsUseCase) : ViewModel() {
+class SearchViewModel @Inject constructor(
+    private val getCoinsUseCase: GetCoinsUseCase,
+    private val sharedPreferences: SharedPreferences) : ViewModel() {
 
     private var coinsList: List<CoinDto> = listOf()
 
@@ -26,6 +30,7 @@ class SearchViewModel @Inject constructor(private val getCoinsUseCase: GetCoinsU
     val coinsLiveData: LiveData<Resource<List<CoinDto>>> get() = _coinsLiveData
 
     private fun getCoins() = viewModelScope.launch {
+
         try {
             getCoinsUseCase.getCoins().let {
                 if (it.isSuccessful) coinsList = it.body()!!
@@ -40,10 +45,12 @@ class SearchViewModel @Inject constructor(private val getCoinsUseCase: GetCoinsU
 
     fun searchCoin(value: String){
         val coinsResultList: MutableList<CoinDto> = mutableListOf()
+        _coinsLiveData.postValue(Resource.Loading())
 
         if (coinsList.isNotEmpty()){
             for (coin in coinsList){
-                if (coin.name.contains(value) || coin.symbol.contains(value)){
+                if (coin.name.toLowerCase().contains(value.toLowerCase())
+                    || coin.symbol.toLowerCase().contains(value.toLowerCase())){
                     coinsResultList.add(coin)
                 }
             }
@@ -53,5 +60,9 @@ class SearchViewModel @Inject constructor(private val getCoinsUseCase: GetCoinsU
             _coinsLiveData.postValue(Resource.Success(coinsResultList))
         else
             _coinsLiveData.postValue(Resource.Error("Coin can not found."))
+    }
+
+    fun isThereAnyUser(): Boolean {
+        return sharedPreferences.getString(Constants.USER_ID, "") != ""
     }
 }

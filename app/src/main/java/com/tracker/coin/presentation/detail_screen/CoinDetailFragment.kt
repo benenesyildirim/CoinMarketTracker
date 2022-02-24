@@ -5,6 +5,8 @@ import android.util.Patterns
 import android.view.Gravity.BOTTOM
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
@@ -21,8 +23,7 @@ import com.tracker.coin.common.Resource
 import com.tracker.coin.data.remote.dto.CoinDto
 import com.tracker.coin.databinding.FragmentCoinDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 @AndroidEntryPoint
 class CoinDetailFragment : Fragment() {
@@ -41,19 +42,13 @@ class CoinDetailFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentCoinDetailBinding.inflate(layoutInflater)
 
+        listenCoinData()
         observeCoinDetail()
         observeRegister()
 
-        lifecycleScope.launch {
-            while (true){
-                delay(refreshInterval)
-                Toast.makeText(context, "refreshing...", Toast.LENGTH_SHORT).show()
-                viewModel.getCoinDetail(binding.coin!!.id)
-            }
-        }
-
         binding.refreshIntervalEt.addTextChangedListener {
-            refreshInterval = it.toString().toLong() * 1000
+            if (it.toString().isNotEmpty())
+                refreshInterval = it.toString().toLong() * 1000
         }
 
         binding.addToFavBtn.setOnClickListener {
@@ -63,9 +58,18 @@ class CoinDetailFragment : Fragment() {
         return binding.root
     }
 
+    private fun listenCoinData() {
+        lifecycleScope.launch {
+            while (true) {
+                delay(refreshInterval)
+
+                viewModel.getCoinDetail(binding.coin?.id!!)
+            }
+        }
+    }
+
     private fun addToFavorites() {
         if (viewModel.addToFavorite(CoinDto(binding.coin!!.id, binding.coin!!.name, binding.coin!!.symbol))) {
-            Toast.makeText(context, "Added to Favorites.", Toast.LENGTH_SHORT).show()
 
             navigateToFavorites()
         } else {
@@ -74,7 +78,8 @@ class CoinDetailFragment : Fragment() {
     }
 
     private fun navigateToFavorites() {
-        Navigation.findNavController(binding.root).navigate(R.id.action_coinDetailFragment_to_favoritesFragment)
+        Navigation.findNavController(binding.root)
+            .navigate(R.id.action_coinDetailFragment_to_favoritesFragment)
     }
 
     private fun observeCoinDetail() {
@@ -86,6 +91,7 @@ class CoinDetailFragment : Fragment() {
                     }
                     is Resource.Success -> {
                         binding.coin = state.data!!
+                        binding.coinDetailLoading.visibility = GONE
                     }
                     is Resource.Error -> {
                         Toast.makeText(context, state.message ?: "There is a problem to find coin!", Toast.LENGTH_SHORT)
@@ -96,19 +102,22 @@ class CoinDetailFragment : Fragment() {
         }
     }
 
-    private fun observeRegister(){
+    private fun observeRegister() {
         with(viewModel) {
             registerLiveData.observe(viewLifecycleOwner) { state ->
                 when (state) {
                     is Resource.Loading -> {
-
+                        binding.coinDetailLoading.visibility = VISIBLE
                     }
                     is Resource.Success -> {
-                        Toast.makeText(context, "Logged In.", Toast.LENGTH_SHORT).show()
+                        binding.coinDetailLoading.visibility = GONE
+
                         viewModel.addToFavorite(CoinDto(binding.coin!!.id, binding.coin!!.name, binding.coin!!.symbol))
                         navigateToFavorites()
                     }
                     is Resource.Error -> {
+                        binding.coinDetailLoading.visibility = GONE
+
                         Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -126,10 +135,10 @@ class CoinDetailFragment : Fragment() {
         okBtn.setOnClickListener {
             val email = emailEt.text.toString()
             val password = passwordEt.text.toString()
-            if (Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > 5){
-                viewModel.registerUser(email,password)
+            if (Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > 5) {
+                viewModel.registerUser(email, password)
                 builder.dismiss()
-            }else{
+            } else {
                 Toast.makeText(context, "Please check your credentials.", Toast.LENGTH_SHORT).show()
             }
         }

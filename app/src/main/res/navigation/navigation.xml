@@ -15,7 +15,8 @@
             app:destination="@id/coinDetailFragment" />
         <action
             android:id="@+id/action_searchFragment_to_favoritesFragment"
-            app:destination="@id/favoritesFragment" />
+            app:destination="@id/favoritesFragment"
+            app:popUpTo="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/coinDetailFragment"
@@ -33,7 +34,6 @@
         tools:layout="@layout/fragment_favorites" >
         <action
             android:id="@+id/action_favoritesFragment_to_coinDetailFragment"
-            app:destination="@id/coinDetailFragment"
-            app:popUpTo="@id/searchFragment" />
+            app:destination="@id/coinDetailFragment" />
     </fragment>
 </navigation>
