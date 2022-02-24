@@ -2,6 +2,7 @@ package com.tracker.coin.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.GsonBuilder
 import com.tracker.coin.common.Constants.BASE_URL
@@ -48,4 +49,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideFirestore() = FirebaseFirestore.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth() = FirebaseAuth.getInstance()
 }
