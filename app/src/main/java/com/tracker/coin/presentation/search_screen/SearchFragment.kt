@@ -6,7 +6,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -60,9 +59,6 @@ class SearchFragment : Fragment() {
                         binding.coinsListRv.visibility = GONE
                         binding.emptyResultIv.visibility = VISIBLE
                         binding.coinsListRv.adapter = CoinListAdapter(listOf()) {}
-                        Toast.makeText(context, state.message
-                                ?: "There is a problem to find coin!", Toast.LENGTH_SHORT)
-                                .show()
                     }
                 }
             }
