@@ -35,6 +35,11 @@ class SearchFragment : Fragment() {
             }
         }
 
+        binding.favoritesBtn.setOnClickListener {
+            Navigation.findNavController(binding.root)
+                .navigate(R.id.action_searchFragment_to_favoritesFragment)
+        }
+
         observeResult()
 
         return binding.root

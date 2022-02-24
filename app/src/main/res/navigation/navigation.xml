@@ -13,10 +13,27 @@
         <action
             android:id="@+id/action_searchFragment_to_coinDetailFragment"
             app:destination="@id/coinDetailFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
     </fragment>
     <fragment
         android:id="@+id/coinDetailFragment"
         android:name="com.tracker.coin.presentation.detail_screen.CoinDetailFragment"
         android:label="fragment_coin_detail"
-        tools:layout="@layout/fragment_coin_detail" />
+        tools:layout="@layout/fragment_coin_detail" >
+        <action
+            android:id="@+id/action_coinDetailFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.tracker.coin.presentation.favorites_screen.FavoritesFragment"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_coinDetailFragment"
+            app:destination="@id/coinDetailFragment"
+            app:popUpTo="@id/searchFragment" />
+    </fragment>
 </navigation>

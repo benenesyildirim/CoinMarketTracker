@@ -36,7 +36,7 @@ class CoinDetailViewModel @Inject constructor(
     private val _coinLiveData = MutableLiveData<Resource<CoinDetailDto>>()
     val coinLiveData: LiveData<Resource<CoinDetailDto>> get() = _coinLiveData
 
-    private fun getCoinDetail(coinId: String) = viewModelScope.launch {
+    fun getCoinDetail(coinId: String) = viewModelScope.launch {
         try {
             getCoinUseCase.getCoinDetail(coinId).let {
                 if (it.isSuccessful) _coinLiveData.postValue(Resource.Success(it.body()!!))

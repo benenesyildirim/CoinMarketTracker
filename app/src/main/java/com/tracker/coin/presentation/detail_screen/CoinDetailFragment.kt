@@ -10,26 +10,32 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import com.tracker.coin.R
 import com.tracker.coin.common.Constants.COIN_ID
 import com.tracker.coin.common.Resource
 import com.tracker.coin.data.remote.dto.CoinDto
 import com.tracker.coin.databinding.FragmentCoinDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CoinDetailFragment : Fragment() {
     private lateinit var binding: FragmentCoinDetailBinding
     private val viewModel: CoinDetailViewModel by viewModels()
 
+    private var refreshInterval: Long = 3000
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             arguments?.getString(COIN_ID)!!
         }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -38,15 +44,37 @@ class CoinDetailFragment : Fragment() {
         observeCoinDetail()
         observeRegister()
 
-        binding.addToFavBtn.setOnClickListener {
-            if (viewModel.addToFavorite(CoinDto(binding.coin!!.id,binding.coin!!.name,binding.coin!!.symbol))){
-                Toast.makeText(context, "Added to Favorites.", Toast.LENGTH_SHORT).show()
-            }else{
-                showEmailDialog()
+        lifecycleScope.launch {
+            while (true){
+                delay(refreshInterval)
+                Toast.makeText(context, "refreshing...", Toast.LENGTH_SHORT).show()
+                viewModel.getCoinDetail(binding.coin!!.id)
             }
         }
 
+        binding.refreshIntervalEt.addTextChangedListener {
+            refreshInterval = it.toString().toLong() * 1000
+        }
+
+        binding.addToFavBtn.setOnClickListener {
+            addToFavorites()
+        }
+
         return binding.root
+    }
+
+    private fun addToFavorites() {
+        if (viewModel.addToFavorite(CoinDto(binding.coin!!.id, binding.coin!!.name, binding.coin!!.symbol))) {
+            Toast.makeText(context, "Added to Favorites.", Toast.LENGTH_SHORT).show()
+
+            navigateToFavorites()
+        } else {
+            showEmailDialog()
+        }
+    }
+
+    private fun navigateToFavorites() {
+        Navigation.findNavController(binding.root).navigate(R.id.action_coinDetailFragment_to_favoritesFragment)
     }
 
     private fun observeCoinDetail() {
@@ -77,6 +105,8 @@ class CoinDetailFragment : Fragment() {
                     }
                     is Resource.Success -> {
                         Toast.makeText(context, "Logged In.", Toast.LENGTH_SHORT).show()
+                        viewModel.addToFavorite(CoinDto(binding.coin!!.id, binding.coin!!.name, binding.coin!!.symbol))
+                        navigateToFavorites()
                     }
                     is Resource.Error -> {
                         Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
