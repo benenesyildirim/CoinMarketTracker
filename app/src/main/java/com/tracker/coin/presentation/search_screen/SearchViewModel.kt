@@ -17,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val getCoinsUseCase: GetCoinsUseCase,
-    private val sharedPreferences: SharedPreferences) : ViewModel() {
+        private val getCoinsUseCase: GetCoinsUseCase,
+        private val sharedPreferences: SharedPreferences) : ViewModel() {
 
     private var coinsList: List<CoinDto> = listOf()
 
@@ -37,26 +37,27 @@ class SearchViewModel @Inject constructor(
                 else _coinsLiveData.postValue(Resource.Error(it.errorBody().toString()))
             }
         } catch (e: HttpException) {
-            _coinsLiveData.postValue(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+            _coinsLiveData.postValue(Resource.Error(e.localizedMessage
+                    ?: "An unexpected error occurred"))
         } catch (e: IOException) {
             _coinsLiveData.postValue(Resource.Error("Couldn't reach server. Check your internet connection."))
         }
     }
 
-    fun searchCoin(value: String){
+    fun searchCoin(value: String) {
         val coinsResultList: MutableList<CoinDto> = mutableListOf()
         _coinsLiveData.postValue(Resource.Loading())
 
-        if (coinsList.isNotEmpty()){
-            for (coin in coinsList){
+        if (coinsList.isNotEmpty()) {
+            for (coin in coinsList) {
                 if (coin.name.toLowerCase().contains(value.toLowerCase())
-                    || coin.symbol.toLowerCase().contains(value.toLowerCase())){
+                        || coin.symbol.toLowerCase().contains(value.toLowerCase())) {
                     coinsResultList.add(coin)
                 }
             }
         }
 
-        if(coinsResultList.isNotEmpty())
+        if (coinsResultList.isNotEmpty())
             _coinsLiveData.postValue(Resource.Success(coinsResultList))
         else
             _coinsLiveData.postValue(Resource.Error("Coin can not found."))

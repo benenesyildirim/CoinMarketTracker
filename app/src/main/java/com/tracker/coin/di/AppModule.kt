@@ -29,15 +29,15 @@ object AppModule {
         val gson = GsonBuilder().setLenient().create()
 
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-            .create(CoinApi::class.java)
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build()
+                .create(CoinApi::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideRepository(api: CoinApi): CoinRepository{
+    fun provideRepository(api: CoinApi): CoinRepository {
         return CoinRepositoryImpl(api)
     }
 

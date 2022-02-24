@@ -53,15 +53,16 @@ class SearchFragment : Fragment() {
                         binding.coinsListRv.adapter = CoinListAdapter(state.data!!) {
                             val bundle = bundleOf(COIN_ID to it.id)
                             Navigation.findNavController(binding.root)
-                                .navigate(R.id.action_searchFragment_to_coinDetailFragment, bundle)
+                                    .navigate(R.id.action_searchFragment_to_coinDetailFragment, bundle)
                         }
                     }
                     is Resource.Error -> {
                         binding.coinsListRv.visibility = GONE
                         binding.emptyResultIv.visibility = VISIBLE
                         binding.coinsListRv.adapter = CoinListAdapter(listOf()) {}
-                        Toast.makeText(context, state.message ?: "There is a problem to find coin!", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, state.message
+                                ?: "There is a problem to find coin!", Toast.LENGTH_SHORT)
+                                .show()
                     }
                 }
             }
@@ -90,7 +91,7 @@ class SearchFragment : Fragment() {
             }
             setOnClickListener {
                 Navigation.findNavController(binding.root)
-                    .navigate(R.id.action_searchFragment_to_favoritesFragment)
+                        .navigate(R.id.action_searchFragment_to_favoritesFragment)
             }
         }
     }

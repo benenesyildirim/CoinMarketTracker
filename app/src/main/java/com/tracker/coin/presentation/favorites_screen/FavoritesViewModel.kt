@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.load.HttpException
-import com.google.firebase.firestore.FirebaseFirestore
 import com.tracker.coin.common.Constants.USER_ID
 import com.tracker.coin.common.Resource
 import com.tracker.coin.data.remote.dto.CoinDto
@@ -18,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
-    private val favoriteCoinsUseCase: FavoriteCoinsUseCase,
-    sharedPreferences: SharedPreferences) : ViewModel() {
+        private val favoriteCoinsUseCase: FavoriteCoinsUseCase,
+        sharedPreferences: SharedPreferences) : ViewModel() {
 
     init {
         val userId = sharedPreferences.getString(USER_ID, "")!!
@@ -39,16 +38,18 @@ class FavoritesViewModel @Inject constructor(
 
                     for (coin in documentList) {
                         coinList.add(CoinDto(coin.get("id").toString(), coin.get("name")
-                            .toString(), coin.get("symbols").toString()))
+                                .toString(), coin.get("symbols").toString()))
                     }
 
                     _favoritesLiveData.postValue(Resource.Success(coinList))
                 } else {
-                    _favoritesLiveData.postValue(Resource.Error(it.exception!!.localizedMessage ?: "An unexpected error occurred"))
+                    _favoritesLiveData.postValue(Resource.Error(it.exception!!.localizedMessage
+                            ?: "An unexpected error occurred"))
                 }
             }
         } catch (e: HttpException) {
-            _favoritesLiveData.postValue(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+            _favoritesLiveData.postValue(Resource.Error(e.localizedMessage
+                    ?: "An unexpected error occurred"))
         } catch (e: IOException) {
             _favoritesLiveData.postValue(Resource.Error("Couldn't reach server. Check your internet connection."))
         }

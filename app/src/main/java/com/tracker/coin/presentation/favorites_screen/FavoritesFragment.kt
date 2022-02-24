@@ -39,8 +39,8 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun observeFavorites() {
-        with(viewModel){
-            favoritesLiveData.observe(viewLifecycleOwner){ state ->
+        with(viewModel) {
+            favoritesLiveData.observe(viewLifecycleOwner) { state ->
                 when (state) {
                     is Resource.Loading -> {
 
@@ -50,12 +50,13 @@ class FavoritesFragment : Fragment() {
                         binding.favoritesRv.adapter = CoinListAdapter(state.data!!) {
                             val bundle = bundleOf(Constants.COIN_ID to it.id)
                             Navigation.findNavController(binding.root)
-                                .navigate(R.id.action_favoritesFragment_to_coinDetailFragment,bundle)
+                                    .navigate(R.id.action_favoritesFragment_to_coinDetailFragment, bundle)
                         }
                     }
                     is Resource.Error -> {
-                        Toast.makeText(context, state.message ?: "There is a problem to find coin!", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, state.message
+                                ?: "There is a problem to find coin!", Toast.LENGTH_SHORT)
+                                .show()
                     }
                 }
 

@@ -19,13 +19,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CoinDetailViewModel @Inject constructor(
-    private val getCoinUseCase: GetCoinUseCase,
-    private val firebaseAuth: FirebaseAuth,
-    private val firestore: FirebaseFirestore,
-    private val sharedPreferences: SharedPreferences,
-    savedStateHandle: SavedStateHandle) : ViewModel() {
+        private val getCoinUseCase: GetCoinUseCase,
+        private val firebaseAuth: FirebaseAuth,
+        private val firestore: FirebaseFirestore,
+        private val sharedPreferences: SharedPreferences,
+        savedStateHandle: SavedStateHandle) : ViewModel() {
 
-    var userId = sharedPreferences.getString(USER_ID,"")
+    var userId = sharedPreferences.getString(USER_ID, "")
 
     init {
         savedStateHandle.get<String>(COIN_ID)?.let { coinId ->
@@ -43,7 +43,8 @@ class CoinDetailViewModel @Inject constructor(
                 else _coinLiveData.postValue(Resource.Error(it.errorBody().toString()))
             }
         } catch (e: HttpException) {
-            _coinLiveData.postValue(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+            _coinLiveData.postValue(Resource.Error(e.localizedMessage
+                    ?: "An unexpected error occurred"))
         } catch (e: IOException) {
             _coinLiveData.postValue(Resource.Error("Couldn't reach server. Check your internet connection."))
         }
@@ -67,7 +68,8 @@ class CoinDetailViewModel @Inject constructor(
                         userId = firebaseAuth.currentUser!!.uid
                         setUserIdToSp()
                     } else {
-                        _registerLiveData.postValue(Resource.Error(loginResult.exception?.localizedMessage ?: "Can not sign in."))
+                        _registerLiveData.postValue(Resource.Error(loginResult.exception?.localizedMessage
+                                ?: "Can not sign in."))
                     }
                 }
             }
@@ -75,7 +77,7 @@ class CoinDetailViewModel @Inject constructor(
     }
 
     fun addToFavorite(coin: CoinDto): Boolean {
-        if (isUserLoggedIn()){
+        if (isUserLoggedIn()) {
             if (userId!!.isNotEmpty()) {
                 firestore.collection(userId!!).document(coin.name).set(coin)
                 return true
@@ -85,11 +87,11 @@ class CoinDetailViewModel @Inject constructor(
         return false
     }
 
-    private fun isUserLoggedIn(): Boolean{
+    private fun isUserLoggedIn(): Boolean {
         return !userId.isNullOrEmpty()
     }
 
-    private fun setUserIdToSp(){
-        sharedPreferences.edit().putString(USER_ID,userId).apply()
+    private fun setUserIdToSp() {
+        sharedPreferences.edit().putString(USER_ID, userId).apply()
     }
 }

@@ -5,7 +5,7 @@ object Constants {
 
     const val COIN_ID = "coinId"
 
-    const val  LOGGED_USER = "userDetails"
+    const val LOGGED_USER = "userDetails"
 
-    const val  USER_ID = "userId"
+    const val USER_ID = "userId"
 }

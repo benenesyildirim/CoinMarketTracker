@@ -79,7 +79,7 @@ class CoinDetailFragment : Fragment() {
 
     private fun navigateToFavorites() {
         Navigation.findNavController(binding.root)
-            .navigate(R.id.action_coinDetailFragment_to_favoritesFragment)
+                .navigate(R.id.action_coinDetailFragment_to_favoritesFragment)
     }
 
     private fun observeCoinDetail() {
@@ -94,8 +94,9 @@ class CoinDetailFragment : Fragment() {
                         binding.coinDetailLoading.visibility = GONE
                     }
                     is Resource.Error -> {
-                        Toast.makeText(context, state.message ?: "There is a problem to find coin!", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, state.message
+                                ?: "There is a problem to find coin!", Toast.LENGTH_SHORT)
+                                .show()
                     }
                 }
             }
