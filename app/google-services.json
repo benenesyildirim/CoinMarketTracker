@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1031532337678",
+    "project_id": "coinmarketingapp",
+    "storage_bucket": "coinmarketingapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031532337678:android:ad61c9986a52b0f39dfa5f",
+        "android_client_info": {
+          "package_name": "com.tracker.coin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1031532337678-mkgo6pe66c2kr73k8dj1c4jq0kh2f7eh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJS1a9zEZUV2q9FAQQ1IQO8nrgdJ6qQ-c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1031532337678-mkgo6pe66c2kr73k8dj1c4jq0kh2f7eh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
